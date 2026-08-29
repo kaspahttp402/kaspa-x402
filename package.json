@@ -4,7 +4,7 @@
   "type": "module",
   "workspaces": ["packages/*"],
   "scripts": {
-    "build": "npm run build --workspaces --if-present",
+    "build": "npm run build -w kaspa-x402 && npm run build -w kaspa-compute-mcp",
     "typecheck": "tsc -p packages/kaspa-x402/tsconfig.json --noEmit && tsc -p packages/kaspa-compute-mcp/tsconfig.json --noEmit"
   },
   "devDependencies": {
