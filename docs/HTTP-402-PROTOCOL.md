@@ -79,4 +79,4 @@ X-PAYMENT: eyJzY2hlbWUiOiJleGFjdCIs…
 - The per-request `payTo` address binds the payment to your request — don't reuse a quote.
 - Optionally verify the `402` challenge signature against `facilitator.publicKey` before paying.
 
-A reference implementation is [`kaspa-402`](../packages/kaspa-402) (`src/client.ts` + `src/pay.ts`).
+A reference implementation is [`kaspa-x402`](../packages/kaspa-x402) (`src/client.ts` + `src/pay.ts`).

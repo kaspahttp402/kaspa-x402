@@ -1,5 +1,5 @@
 import { writeFileSync } from 'node:fs';
-import { generateWallet } from 'kaspa-402';
+import { generateWallet } from 'kaspa-x402';
 
 const GATEWAY = process.env.KASPA_COMPUTE_GATEWAY ?? 'https://gateway.kaspahttp402.example';
 

@@ -5,7 +5,7 @@
   "type": "module",
   "license": "MIT",
   "keywords": ["mcp", "model-context-protocol", "kaspa", "http-402", "ai-agents", "pay-per-call"],
-  "repository": { "type": "git", "url": "https://github.com/kaspahttp402/kaspa-402" },
+  "repository": { "type": "git", "url": "https://github.com/kaspahttp402/kaspa-x402" },
   "bin": { "kaspa-compute-mcp": "./dist/bin.js" },
   "files": ["dist"],
   "engines": { "node": ">=20" },
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
-    "kaspa-402": "^0.1.0",
+    "kaspa-x402": "^0.1.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {

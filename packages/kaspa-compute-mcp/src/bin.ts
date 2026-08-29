@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { addressForKey } from 'kaspa-402';
+import { addressForKey } from 'kaspa-x402';
 
 const cmd = process.argv[2];
 

@@ -1,7 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
-import { requestCompute } from 'kaspa-402';
+import { requestCompute } from 'kaspa-x402';
 
 const GATEWAY = process.env.KASPA_COMPUTE_GATEWAY ?? 'https://gateway.kaspahttp402.example';
 const KEY = process.env.KASPA_COMPUTE_PRIVATE_KEY ?? '';

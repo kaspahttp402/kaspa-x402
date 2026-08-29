@@ -1,4 +1,4 @@
-# kaspa-402
+# kaspa-x402
 
 Pay for AI compute **per call, in Kaspa (KAS)**, over HTTP 402 — no API key, no signup, no
 human clicking "buy". This repo is how you plug into a running
@@ -11,7 +11,7 @@ real upstream AI cost.
 | You want to… | Use |
 |---|---|
 | Give an MCP agent (Claude Desktop, Cursor, Cline, …) a pay-per-call compute tool | **[`kaspa-compute-mcp`](packages/kaspa-compute-mcp)** — one config block |
-| Call the gateway from your own Node code | **[`kaspa-402`](packages/kaspa-402)** — `npm i kaspa-402`, ~10 lines |
+| Call the gateway from your own Node code | **[`kaspa-x402`](packages/kaspa-x402)** — `npm i kaspa-x402`, ~10 lines |
 | Integrate from another language | **[the HTTP 402 protocol doc](docs/HTTP-402-PROTOCOL.md)** — implement it yourself |
 
 ## The MCP way (fastest)
@@ -38,7 +38,7 @@ address it shows with a few KAS, and your agent can call `kaspa_compute` from th
 ## The library way
 
 ```ts
-import { requestCompute } from 'kaspa-402';
+import { requestCompute } from 'kaspa-x402';
 
 const { result, txid } = await requestCompute(
   'https://<gateway-url>',
@@ -61,7 +61,7 @@ Kaspa's ~10 blocks/sec settlement is what makes that whole loop fit inside one H
 
 ## Packages
 
-- **[`kaspa-402`](packages/kaspa-402)** — the client library. Bundles the Kaspa WASM SDK, finds
+- **[`kaspa-x402`](packages/kaspa-x402)** — the client library. Bundles the Kaspa WASM SDK, finds
   a public node automatically, does the 402 dance.
 - **[`kaspa-compute-mcp`](packages/kaspa-compute-mcp)** — an MCP server exposing one tool,
   `kaspa_compute`, with a per-session spend cap.

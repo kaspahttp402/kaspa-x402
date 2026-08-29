@@ -1,10 +1,10 @@
-# kaspa-402
+# kaspa-x402
 
 Client library for paying an **HTTP 402 (Payment Required)** challenge on-chain in Kaspa (KAS).
 Talks to a [kaspa-ai-gateway](https://github.com/kaspahttp402/kaspa-ai-gateway).
 
 ```
-npm install kaspa-402
+npm install kaspa-x402
 ```
 
 Node 20+. Bundles the Kaspa WASM SDK; finds a public Kaspa node automatically.
@@ -12,7 +12,7 @@ Node 20+. Bundles the Kaspa WASM SDK; finds a public Kaspa node automatically.
 ## Usage
 
 ```ts
-import { requestCompute } from 'kaspa-402';
+import { requestCompute } from 'kaspa-x402';
 
 const outcome = await requestCompute(
   'https://<gateway-url>',
