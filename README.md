@@ -4,9 +4,10 @@
 API key, and no human in the loop.**
 
 This repo is the client side of [**kaspa-ai-gateway**](https://github.com/kaspahttp402/kaspa-ai-gateway):
-a live, free, non-commercial demo of machine-to-machine payments for AI. There's a hosted
-gateway running at **[kaspai.win](https://kaspai.win)** — point an agent at it and it can buy
-AI compute by broadcasting a real Kaspa transaction.
+a live, two-sided market for machine-to-machine AI payments — agents **buy** AI compute, workers
+**sell** it, every call settled on-chain in Kaspa. There's a hosted gateway running at
+**[kaspai.win](https://kaspai.win)** — point an agent at it and it can buy AI compute by
+broadcasting a real Kaspa transaction, or point a worker at it and get paid in KAS to serve.
 
 - npm: [`kaspa-compute-mcp`](https://www.npmjs.com/package/kaspa-compute-mcp) · [`kaspa-x402`](https://www.npmjs.com/package/kaspa-x402)
 - Live dashboard: **[kaspai.win](https://kaspai.win)**
@@ -22,6 +23,7 @@ AI compute by broadcasting a real Kaspa transaction.
 - [Try it in 2 minutes (MCP)](#try-it-in-2-minutes-mcp)
 - [Use it in your own code](#use-it-in-your-own-code)
 - [Use it from any language](#use-it-from-any-language)
+- [Sell compute — run a worker](#sell-compute--run-a-worker)
 - [The live gateway & dashboard (kaspai.win)](#the-live-gateway--dashboard-kaspaiwin)
   - [The payment feed](#the-payment-feed)
   - [The blockDAG visualizer](#the-blockdag-visualizer)
@@ -51,10 +53,10 @@ The hosted gateway at **kaspai.win** does one kind of work: **AI compute** (LLM 
 a prompt, you pay a few hundredths of a cent in KAS, you get the model's answer back plus the
 transaction id that paid for it.
 
-**It is non-commercial.** The operator takes a **0% cut**. Each request is priced only to cover
-the real upstream AI API cost (Anthropic etc.) plus a small buffer for exchange-rate wobble.
-It's a demonstration that this pattern works on real infrastructure with real money — not a
-business. (Reselling LLM API access for profit isn't allowed by the providers' terms anyway.)
+**Pricing is at cost.** The gateway operator takes a **0% cut** — each request is priced to
+cover the underlying compute plus a small buffer for KAS/USD movement between quote and
+settlement. Workers who serve a task are paid its full price. Real infrastructure, real money,
+running now.
 
 ## What it does (one request, start to finish)
 
@@ -207,6 +209,48 @@ build and submit a transaction is enough to implement a client.
 
 ---
 
+## Sell compute — run a worker
+
+The gateway is two-sided. Agents on one side buy AI compute; **workers on the other side serve
+it and get paid in KAS**. A worker is a process you run that connects to the gateway, receives
+paid tasks, answers them with model access you supply, and is paid on-chain for each one.
+
+- **Self-service — no application.** You register with one HTTP call and are approved
+  immediately. A worker is only paused if it starts failing real tasks.
+- **You keep the whole price.** `WORKER_EARNINGS_SHARE` is `1.0` on kaspai.win: the gateway
+  takes nothing, so each task pays you its full quoted price.
+- **Paid on-chain, automatically.** Earnings accrue and are swept to your Kaspa address on a
+  schedule once they clear a dust threshold — real transactions, not an internal tab.
+- **No hardware market.** "Compute" is the inference call. A worker points at a model API key
+  you hold or a local model server you run — nothing is deployed to your machine but the prompt.
+
+### Steps
+
+It's one HTTP call to register, then a WebSocket you hold open. Full spec — every message shape,
+what the gateway verifies before crediting you, and a self-contained ~60-line reference worker
+you can run as-is — is in **[docs/WORKER-PROTOCOL.md](docs/WORKER-PROTOCOL.md)**.
+
+1. **Register** — returns a `token`, shown once:
+
+   ```bash
+   curl -X POST https://kaspai.win/workers/register \
+     -H 'Content-Type: application/json' \
+     -d '{"name":"my-worker","payoutAddress":"kaspa:YOUR_ADDRESS",
+          "capabilities":{"models":["kaspa-fast-1"],"maxConcurrency":2}}'
+   ```
+
+2. **Connect** a WebSocket to `wss://kaspai.win/worker`, send a `register` frame with the token,
+   and answer the `task` messages the gateway pushes — run each prompt through **your** model
+   access (a provider key you hold, or a local model server) and send the result back.
+
+3. **Get paid.** Completed tasks are credited the full price (0% to the operator) and swept to
+   your `payoutAddress` on-chain on a schedule, once past a small dust threshold.
+
+The gateway independently verifies results (latency, emptiness, canned/duplicate output, a
+random re-run spot-check), so point your worker at a real model — not a stub.
+
+---
+
 ## The live gateway & dashboard (kaspai.win)
 
 Open **[kaspai.win](https://kaspai.win)** in a browser. It's a retro-terminal dashboard showing
@@ -262,17 +306,18 @@ Eight live readouts:
 | **MEMPOOL** | unconfirmed transactions in the connected node right now |
 | **PEERS** | how many other Kaspa nodes the gateway's node is connected to |
 | **NODE SYNC** | how caught up the gateway's own Kaspa node is |
-| **WORKERS** | how many optional helper processes are attached (usually 0 — see below) |
+| **WORKERS** | how many worker processes are connected and serving tasks right now |
 | **UPTIME** | how long your browser session has been watching |
 
 Click any of them (or any panel header) for a plain-English explanation.
 
 ### The worker pool
 
-The gateway answers every request itself, using its own AI provider key. The WORKER POOL panel
-is for an optional mode where extra helper processes can attach and share the load — normally
-there are none, and the panel just says *"the gateway is answering requests itself."* You don't
-need to think about it to use the gateway.
+The other side of the market. When workers are connected, the gateway routes each paid task to
+an idle one, which answers it with its own model access and is paid the full task price on-chain
+(the operator's share is 0%). The panel shows each connected worker's model, status, completed
+task count, and accrued KAS payout. With no workers connected the gateway answers requests
+itself. See [Sell compute — run a worker](#sell-compute--run-a-worker).
 
 ### M05H — the trading-bot demo
 
@@ -299,10 +344,10 @@ needs, out of money it already controls, with no human approving each call.
 
 - **What a call costs: a flat 0.2 KAS (~half a cent).** That's a floor forced by Kaspa's
   anti-dust rule (KIP-9): a payment much smaller than that, spent from a normally-funded wallet,
-  is rejected by consensus. The real compute cost of a task is a fraction of 0.2 KAS — the
-  remainder goes to the gateway's treasury toward the upstream API bill and a KAS/USD volatility
-  buffer. The operator still takes no personal cut. (A future prepaid-balance mode could price
-  per-call at true cost; on-chain-per-call has this floor.)
+  is rejected by consensus. Real compute cost is a fraction of that; the remainder covers the
+  KAS/USD buffer and, when no worker served the task, the gateway's own upstream bill. The
+  operator's cut is 0%. (A future prepaid-balance mode could price per-call at true cost;
+  on-chain-per-call has this floor.)
 - **Nothing is refunded.** You pay the quoted amount; overpaying isn't credited back
   (`kaspa-x402` always pays the exact quote). Underpaying is rejected.
 - **The wallet you configure is real money.** Fund it with only what you want an agent to be
@@ -318,9 +363,13 @@ needs, out of money it already controls, with no human approving each call.
 
 ## FAQ
 
-**Is it really free?** The compute isn't free — you pay the real API cost in KAS. But the
-operator adds no margin and takes no cut. There's a voluntary donation address on the dashboard
-that goes toward the out-of-pocket API bill.
+**Is it really free?** The compute isn't free — you pay for it in KAS, priced at cost. The
+gateway operator adds no margin and takes no cut; a served worker keeps the whole price. There's
+a voluntary donation address on the dashboard toward the gateway's own running costs.
+
+**How do I get paid to run a worker?** Register over HTTP, hold a WebSocket open, answer tasks
+with your own model access. Full walkthrough + a runnable reference worker:
+[Sell compute — run a worker](#sell-compute--run-a-worker).
 
 **Do I need my own Kaspa node?** No. `kaspa-x402` discovers a public node automatically. Pass
 `rpcUrl` if you want to use a specific one.
@@ -338,8 +387,8 @@ breaker prevents most of these).
 [kaspa-ai-gateway repo](https://github.com/kaspahttp402/kaspa-ai-gateway), with a full runbook.
 
 **Is this the same as x402 / L402 / other agent-payment schemes?** Same idea (HTTP 402 for
-machine payments), different settlement layer — this one is Kaspa-native, which nothing else is,
-and it's non-commercial.
+machine payments), different settlement layer — this one is Kaspa-native, which nothing else is:
+~1s confirmations and sub-cent fees, so pay-and-serve fits inside one HTTP request.
 
 ---
 
@@ -350,7 +399,8 @@ and it's non-commercial.
 | **[`kaspa-x402`](packages/kaspa-x402)** | The client library. `requestCompute` + the payment primitives. Bundles the Kaspa WASM SDK, finds a public node, does the 402 handshake. |
 | **[`kaspa-compute-mcp`](packages/kaspa-compute-mcp)** | An MCP server exposing the `kaspa_compute` tool, `npx kaspa-compute-mcp init` for wallet setup, and a per-session spend cap. |
 
-`docs/HTTP-402-PROTOCOL.md` — the raw protocol, for non-Node integrators.
+`docs/HTTP-402-PROTOCOL.md` — the raw buy-side protocol, for non-Node integrators.
+`docs/WORKER-PROTOCOL.md` — the sell-side (worker) protocol + a reference worker.
 
 Monorepo (npm workspaces). `npm install && npm run build` at the root builds both.
 
