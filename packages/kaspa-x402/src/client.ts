@@ -2,7 +2,23 @@ import { encodePaymentProof } from './codec.js';
 import { buildPaymentProof } from './pay.js';
 import type { ComputeOutcome, PaymentRequiredBody, RequestComputeOptions, TaskRequest, TaskResult, SettlementReceipt } from './types.js';
 
-const SETTLE_RETRY_MS = [1500, 3000, 5000, 8000];
+const SETTLE_RETRY_MS = [1500, 3000, 5000, 8000, 12000];
+
+/**
+ * Thrown when the payment WAS broadcast but the gateway then rejected or never accepted it.
+ * `txid` / `amountSompi` are the on-chain payment you already made — keep them for a manual
+ * follow-up with the operator.
+ */
+export class PaidButUndeliveredError extends Error {
+  constructor(
+    message: string,
+    readonly txid: string,
+    readonly amountSompi: string
+  ) {
+    super(message);
+    this.name = 'PaidButUndeliveredError';
+  }
+}
 
 /**
  * Run one paid AI-compute request against a kaspa-ai-gateway: POST, get a 402 with a price, pay
@@ -44,7 +60,11 @@ export async function requestCompute(
     paidRes = await fetch(endpoint, { method: 'POST', headers: paidHeaders, body });
   }
   if (!paidRes.ok) {
-    throw new Error(`Gateway rejected the payment: ${paidRes.status} ${await paidRes.text()}`);
+    throw new PaidButUndeliveredError(
+      `Payment ${proof.txid} was made but the gateway did not deliver: ${paidRes.status} ${await paidRes.text()}`,
+      proof.txid,
+      proof.amountSompi
+    );
   }
   const settled = (await paidRes.json()) as { result: TaskResult; payment: SettlementReceipt };
   emit({ type: 'done', txid: proof.txid });

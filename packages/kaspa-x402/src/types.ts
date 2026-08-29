@@ -83,7 +83,7 @@ export interface RequestComputeOptions {
   rpcUrl?: string;
   /** Override the network id (default: taken from the gateway's 402 quote). */
   network?: string;
-  /** Priority fee in sompi added on top of the SDK's mass-based fee. Default 10000. */
+  /** Priority fee in sompi added on top of the SDK's mass-based fee. Default 300000 (~0.003 KAS). */
   priorityFeeSompi?: bigint;
   /** Progress callback. */
   onEvent?: (event: PayEvent) => void;

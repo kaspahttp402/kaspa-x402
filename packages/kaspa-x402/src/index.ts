@@ -1,4 +1,4 @@
-export { requestCompute } from './client.js';
+export { requestCompute, PaidButUndeliveredError } from './client.js';
 export { sendKas, buildPaymentProof, closeRpc } from './pay.js';
 export { encodePaymentProof } from './codec.js';
 export { generateWallet, addressForKey } from './wallet.js';

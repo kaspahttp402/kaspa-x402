@@ -15,14 +15,14 @@ const NOT_CONFIGURED =
   'then set KASPA_COMPUTE_PRIVATE_KEY in this server\'s config and restart.';
 
 export async function runServer(): Promise<void> {
-  const server = new McpServer({ name: 'kaspa-compute', version: '0.1.0' });
+  const server = new McpServer({ name: 'kaspa-compute', version: '0.1.3' });
 
   server.registerTool(
     'kaspa_compute',
     {
       description:
         'Run an AI compute task, paying per call in Kaspa (KAS) over HTTP 402 -- no API key needed. ' +
-        'Each call broadcasts a real Kaspa transaction from your configured wallet and costs a fraction of a cent.',
+        'Each call broadcasts a real Kaspa transaction from your configured wallet and costs a flat 0.2 KAS (~half a cent).',
       inputSchema: {
         prompt: z.string().min(1).max(8000),
         model: z.enum(['kaspa-fast-1', 'kaspa-reasoning-1']).optional(),
@@ -43,8 +43,12 @@ export async function runServer(): Promise<void> {
           privateKey: KEY,
           rpcUrl: RPC_URL,
           clientKind: 'mcp',
+          // count spend the moment a payment is quoted+broadcast, not just on success -- a
+          // paid-but-failed call still spent the KAS and must count against the cap
+          onEvent: (e) => {
+            if (e.type === 'quote') spentSompi += BigInt(e.amountSompi);
+          },
         });
-        spentSompi += BigInt(outcome.payment.amountSompi);
         const paidKas = (Number(outcome.payment.amountSompi) / 1e8).toFixed(6);
         return {
           content: [

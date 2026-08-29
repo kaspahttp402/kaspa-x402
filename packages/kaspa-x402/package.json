@@ -1,6 +1,6 @@
 {
   "name": "kaspa-x402",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Pay an HTTP 402 (Payment Required) challenge on-chain in Kaspa. Client for a kaspa-ai-gateway.",
   "type": "module",
   "license": "MIT",

@@ -43,7 +43,7 @@ exchange that lists Kaspa, withdraw), paste the block, restart your MCP client.
 `kaspa_compute(prompt, model?, maxTokens?)`
 - `model`: `kaspa-fast-1` (default) or `kaspa-reasoning-1`
 - Returns the answer, the amount paid in KAS, and the transaction id.
-- **Every call broadcasts a real Kaspa transaction and costs a fraction of a cent.**
+- **Every call broadcasts a real Kaspa transaction and costs a flat 0.2 KAS (~half a cent).**
 
 ## Env vars
 

@@ -86,8 +86,9 @@ wrap steps 1–7 so you never think about them.
 
 - **Agents can transact without a human.** No signup, no KYC, no stored card, no per-vendor API
   key. A wallet with a few dollars of KAS in it is the entire credential.
-- **Micropayments actually work.** A call costs ~$0.001–$0.02. Card networks can't process that
-  economically; a Kaspa transaction fee is a tiny fraction of a cent.
+- **Micropayments actually work.** A call costs a fixed **0.2 KAS (~half a cent)** — the
+  smallest amount that reliably settles on Kaspa given its anti-dust rules. Card networks can't
+  process a payment that size economically; a Kaspa transaction can.
 - **It's fast enough to be invisible.** Kaspa targets ~10 blocks per second, so "pay and get a
   confirmation" fits inside one HTTP request. On Bitcoin-speed settlement this pattern is
   unusable.
@@ -296,9 +297,12 @@ needs, out of money it already controls, with no human approving each call.
 
 ## Money, cost & safety
 
-- **What a call costs:** the gateway estimates the real upstream API cost of your prompt in USD,
-  multiplies by 1.5 (a buffer for KAS/USD movement and token-estimate error — **not** profit),
-  and converts to KAS at the live rate. Typically **$0.001–$0.02** for `kaspa-fast-1`.
+- **What a call costs: a flat 0.2 KAS (~half a cent).** That's a floor forced by Kaspa's
+  anti-dust rule (KIP-9): a payment much smaller than that, spent from a normally-funded wallet,
+  is rejected by consensus. The real compute cost of a task is a fraction of 0.2 KAS — the
+  remainder goes to the gateway's treasury toward the upstream API bill and a KAS/USD volatility
+  buffer. The operator still takes no personal cut. (A future prepaid-balance mode could price
+  per-call at true cost; on-chain-per-call has this floor.)
 - **Nothing is refunded.** You pay the quoted amount; overpaying isn't credited back
   (`kaspa-x402` always pays the exact quote). Underpaying is rejected.
 - **The wallet you configure is real money.** Fund it with only what you want an agent to be

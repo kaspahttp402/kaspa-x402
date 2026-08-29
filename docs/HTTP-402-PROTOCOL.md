@@ -23,7 +23,7 @@ The gateway replies **`402 Payment Required`**:
     "network": "mainnet",
     "asset": "KAS",
     "payTo": "kaspa:qq…",          // a one-off address unique to this request
-    "amountSompi": "742000",        // 1 KAS = 100_000_000 sompi
+    "amountSompi": "20000000",        // 1 KAS = 100_000_000 sompi
     "nonce": "b1c2…",               // ties your payment to this request
     "maxTimeoutSeconds": 60,
     "facilitator": { "publicKey": "02…", "url": "https://…/facilitator" }
@@ -49,7 +49,7 @@ Build the proof object:
   "network": "mainnet",
   "payer": "kaspa:qr…",            // your sending address
   "txid": "…",                     // from step 2
-  "amountSompi": "742000",         // must equal the quote
+  "amountSompi": "20000000",         // must equal the quote
   "nonce": "b1c2…"                 // from step 1
 }
 ```

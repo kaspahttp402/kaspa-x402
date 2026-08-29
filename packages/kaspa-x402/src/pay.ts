@@ -10,12 +10,15 @@ let rpcSingleton: KaspaRpcClient | null = null;
 
 async function getRpc(kaspa: KaspaSdk, networkId: unknown, rpcUrl?: string): Promise<KaspaRpcClient> {
   if (rpcSingleton?.isConnected) return rpcSingleton;
+  // borsh, not json: the public Resolver node pool only serves the borsh wRPC endpoint (a json
+  // client just hangs forever trying to connect). borsh is also the SDK default.
+  const encoding = kaspa.Encoding.Borsh;
   const client = rpcUrl
-    ? new kaspa.RpcClient({ url: rpcUrl, encoding: kaspa.Encoding.SerdeJson, networkId })
-    : new kaspa.RpcClient({ resolver: new kaspa.Resolver(), encoding: kaspa.Encoding.SerdeJson, networkId });
+    ? new kaspa.RpcClient({ url: rpcUrl, encoding, networkId })
+    : new kaspa.RpcClient({ resolver: new kaspa.Resolver(), encoding, networkId });
   await client.connect({ blockAsyncConnect: false });
-  for (let i = 0; i < 100 && !client.isConnected; i += 1) await new Promise((r) => setTimeout(r, 100));
-  if (!client.isConnected) throw new Error('Could not connect to a Kaspa node (set rpcUrl, or check your network).');
+  for (let i = 0; i < 150 && !client.isConnected; i += 1) await new Promise((r) => setTimeout(r, 100));
+  if (!client.isConnected) throw new Error('Could not connect to a Kaspa node (pass rpcUrl, or check your network).');
   rpcSingleton = client;
   return client;
 }
@@ -41,7 +44,7 @@ export async function sendKas(
   const generator = new kaspa.Generator({
     entries,
     outputs: [{ address: toAddress, amount: amountSompi }],
-    priorityFee: opts.priorityFeeSompi ?? 10_000n,
+    priorityFee: opts.priorityFeeSompi ?? 300_000n, // matches the gateway's proven default; ~0.003 KAS
     changeAddress: fromAddress,
     networkId,
   });
