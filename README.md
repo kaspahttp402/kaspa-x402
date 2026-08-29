@@ -28,7 +28,6 @@ AI compute by broadcasting a real Kaspa transaction.
   - [The stat row](#the-stat-row)
   - [The worker pool](#the-worker-pool)
   - [M05H — the trading-bot demo](#m05h--the-trading-bot-demo)
-- [Providing compute (the other side of the market)](#providing-compute-the-other-side-of-the-market)
 - [Money, cost & safety](#money-cost--safety)
 - [FAQ](#faq)
 - [Packages in this repo](#packages-in-this-repo)
@@ -262,23 +261,17 @@ Eight live readouts:
 | **MEMPOOL** | unconfirmed transactions in the connected node right now |
 | **PEERS** | how many other Kaspa nodes the gateway's node is connected to |
 | **NODE SYNC** | how caught up the gateway's own Kaspa node is |
-| **WORKERS** | connected compute providers (see below) |
+| **WORKERS** | how many optional helper processes are attached (usually 0 — see below) |
 | **UPTIME** | how long your browser session has been watching |
 
 Click any of them (or any panel header) for a plain-English explanation.
 
 ### The worker pool
 
-The gateway is built as a **two-sided marketplace**:
-
-- **Buyers** — agents paying for compute (everything above).
-- **Sellers / workers** — machines that *answer* the compute tasks, using their own AI provider
-  key, and get paid the full KAS the customer paid (operator takes 0%).
-
-The WORKER POOL panel lists connected workers: a short id, which model they run, whether they're
-idle or busy, tasks completed, and KAS earned. **When no external workers are connected it says
-so plainly** — the gateway just answers requests directly in that case. (That's the normal state
-today; the worker side exists and works but isn't being actively seeded.)
+The gateway answers every request itself, using its own AI provider key. The WORKER POOL panel
+is for an optional mode where extra helper processes can attach and share the load — normally
+there are none, and the panel just says *"the gateway is answering requests itself."* You don't
+need to think about it to use the gateway.
 
 ### M05H — the trading-bot demo
 
@@ -298,23 +291,6 @@ with crypto micropayments** — the whole pattern, made concrete:
 
 The point isn't the trading — it's that an agent can autonomously pay for the intelligence it
 needs, out of money it already controls, with no human approving each call.
-
----
-
-## Providing compute (the other side of the market)
-
-Anyone can run a **worker** and get paid in KAS for answering tasks:
-
-1. Register your machine (`POST /workers/register` with a Kaspa payout address) — you get a
-   token back, approved immediately.
-2. Run the worker process with your own Anthropic/OpenAI/Gemini/etc. key.
-3. Tasks get routed to you; the **full** task price is sent to your address on a real on-chain
-   payout (operator takes 0%).
-
-No GPU or special hardware — just an AI provider key of your own. The worker code lives in the
-[gateway repo](https://github.com/kaspahttp402/kaspa-ai-gateway). Standing caveat: running a
-worker *for profit* would mean reselling your provider's API access, which their terms don't
-allow without approval — so treat it as a demo of the two-sided flow.
 
 ---
 
