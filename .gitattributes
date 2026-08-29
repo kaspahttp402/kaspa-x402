@@ -1,0 +1,4 @@
+# The vendored Kaspa WASM build is third-party output -- never touch its line endings
+# (kaspa_bg.wasm is binary; converting it would corrupt it).
+packages/kaspa-x402/vendor/** -text
+packages/kaspa-x402/vendor/kaspa-wasm-2.0.1/kaspa_bg.wasm binary
