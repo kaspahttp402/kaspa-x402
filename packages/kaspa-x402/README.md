@@ -15,7 +15,7 @@ Node 20+. Bundles the Kaspa WASM SDK; finds a public Kaspa node automatically.
 import { requestCompute } from 'kaspa-x402';
 
 const outcome = await requestCompute(
-  'https://<gateway-url>',
+  'https://kaspai.win',
   { prompt: 'Explain GHOSTDAG in two sentences.', model: 'kaspa-fast-1' },
   {
     privateKey: process.env.MY_KASPA_KEY!,   // funded wallet that pays the 402

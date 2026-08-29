@@ -1,7 +1,7 @@
 import { writeFileSync } from 'node:fs';
 import { generateWallet } from 'kaspa-x402';
 
-const GATEWAY = process.env.KASPA_COMPUTE_GATEWAY ?? 'https://gateway.kaspahttp402.example';
+const GATEWAY = process.env.KASPA_COMPUTE_GATEWAY ?? 'https://kaspai.win';
 
 export async function runInit(): Promise<void> {
   const network = process.argv.includes('--testnet') ? 'testnet-10' : 'mainnet';

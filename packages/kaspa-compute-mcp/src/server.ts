@@ -3,7 +3,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod';
 import { requestCompute } from 'kaspa-x402';
 
-const GATEWAY = process.env.KASPA_COMPUTE_GATEWAY ?? 'https://gateway.kaspahttp402.example';
+const GATEWAY = process.env.KASPA_COMPUTE_GATEWAY ?? 'https://kaspai.win';
 const KEY = process.env.KASPA_COMPUTE_PRIVATE_KEY ?? '';
 const RPC_URL = process.env.KASPA_COMPUTE_RPC_URL || undefined;
 const MAX_SPEND_KAS = Number(process.env.KASPA_COMPUTE_MAX_SPEND_KAS ?? '1');

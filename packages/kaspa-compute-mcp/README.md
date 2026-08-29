@@ -17,7 +17,7 @@ Add to your MCP client's config (`claude_desktop_config.json`, Cursor, Cline, â€
       "command": "npx",
       "args": ["-y", "kaspa-compute-mcp"],
       "env": {
-        "KASPA_COMPUTE_GATEWAY": "https://<hosted gateway URL>",
+        "KASPA_COMPUTE_GATEWAY": "https://kaspai.win",
         "KASPA_COMPUTE_PRIVATE_KEY": "<your kaspa wallet private key>",
         "KASPA_COMPUTE_MAX_SPEND_KAS": "1"
       }
