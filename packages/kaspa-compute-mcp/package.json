@@ -1,0 +1,25 @@
+{
+  "name": "kaspa-compute-mcp",
+  "version": "0.1.0",
+  "description": "MCP server: let any MCP-capable AI agent pay per call for AI compute in Kaspa (KAS) over HTTP 402.",
+  "type": "module",
+  "license": "MIT",
+  "keywords": ["mcp", "model-context-protocol", "kaspa", "http-402", "ai-agents", "pay-per-call"],
+  "repository": { "type": "git", "url": "https://github.com/kaspahttp402/kaspa-402" },
+  "bin": { "kaspa-compute-mcp": "./dist/bin.js" },
+  "files": ["dist"],
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "kaspa-402": "^0.1.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.2",
+    "typescript": "^5.4.5"
+  }
+}

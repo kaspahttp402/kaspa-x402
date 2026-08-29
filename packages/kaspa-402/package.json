@@ -1,0 +1,27 @@
+{
+  "name": "kaspa-402",
+  "version": "0.1.0",
+  "description": "Pay an HTTP 402 (Payment Required) challenge on-chain in Kaspa. Client for a kaspa-ai-gateway.",
+  "type": "module",
+  "license": "MIT",
+  "keywords": ["kaspa", "http-402", "x402", "micropayments", "ai-agents", "pay-per-call"],
+  "repository": { "type": "git", "url": "https://github.com/kaspahttp402/kaspa-402" },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } },
+  "files": ["dist", "vendor"],
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "isomorphic-ws": "^5.0.0",
+    "ws": "^8.17.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.2",
+    "@types/ws": "^8.5.10",
+    "typescript": "^5.4.5"
+  }
+}

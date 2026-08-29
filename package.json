@@ -1,0 +1,13 @@
+{
+  "name": "kaspa-402-monorepo",
+  "private": true,
+  "type": "module",
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "tsc -p packages/kaspa-402/tsconfig.json --noEmit && tsc -p packages/kaspa-compute-mcp/tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}
