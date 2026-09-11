@@ -33,15 +33,18 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "node --import tsx --test \"src/**/*.test.ts\""
   },
   "dependencies": {
     "isomorphic-ws": "^5.0.0",
-    "ws": "^8.17.0"
+    "ws": "^8.17.0",
+    "metered-protocol": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.14.2",
     "@types/ws": "^8.5.10",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "tsx": "^4.19.2"
   }
 }
