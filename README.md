@@ -1,5 +1,11 @@
 # kaspa-x402
 
+> **Retired 2026-09-12.** Despite the name, this package was a client for one specific gateway,
+> not for the Kaspa x402 standard, and it does not interoperate with standard Kaspa x402 servers.
+> Use the reference implementation instead: **`@kaspa-x402/client`** and **`@kaspa-x402/server`**
+> from [kaspa-x402.org](https://kaspa-x402.org). For pay-per-unit sessions where both sides count
+> what was delivered, see [metered-protocol](https://github.com/kaspahttp402/metered-protocol).
+
 **Let an AI agent pay for its own compute — per call, in Kaspa (KAS) — with no account, no
 API key, and no human in the loop.**
 
